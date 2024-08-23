@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
   "name": "skill-sync-ai",
   "version": "0.1.0",
   "private": true,
@@ -36,5 +37,20 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+=======
+  "name": "backend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2"
+>>>>>>> 75f68a2b2f7db3e2ad07549b61d85c57ae802c06
   }
 }
