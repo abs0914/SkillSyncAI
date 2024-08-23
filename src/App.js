@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Routes, Route, useNavigate } from 'react-router-dom';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import Home from './pages/Home';
@@ -7,17 +8,35 @@ import About from './pages/About';
 import Contact from './pages/Contact';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import VIPPage from './pages/VIPPage';
+import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
   const [token, setToken] = useState('');
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const savedToken = localStorage.getItem('token');
+    if (savedToken) {
+      setToken(savedToken);
+    }
+  }, []);
 
   const handleLogin = (token) => {
     setToken(token);
+    localStorage.setItem('token', token);
+    navigate('/');
+  };
+
+  const handleLogout = () => {
+    setToken('');
+    localStorage.removeItem('token');
+    navigate('/login');
   };
 
   return (
     <div className="App">
-      <Header />
+      <Header token={token} onLogout={handleLogout} />
       <main>
         <Routes>
           <Route path="/" element={<Home />} />
@@ -25,6 +44,15 @@ function App() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/login" element={<Login onLogin={handleLogin} />} />
           <Route path="/register" element={<Register />} />
+          {/* VIP Page is now protected */}
+          <Route
+            path="/vip"
+            element={
+              <ProtectedRoute token={token}>
+                <VIPPage />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </main>
       <Footer />

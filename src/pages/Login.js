@@ -1,24 +1,24 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-function Register() {
+function Login({ onLogin }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.post('http://localhost:5000/api/register', { username, password })
-      .then(() => {
-        alert('User registered successfully');
+    axios.post('http://localhost:5000/api/login', { username, password })
+      .then((response) => {
+        onLogin(response.data.token);
       })
       .catch((error) => {
-        console.error('Registration failed', error);
+        console.error('Login failed', error);
       });
   };
 
   return (
     <form onSubmit={handleSubmit}>
-      <h3>Register</h3>
+      <h3>Login</h3>
       <div>
         <label>Username:</label>
         <input
@@ -35,9 +35,9 @@ function Register() {
           onChange={(e) => setPassword(e.target.value)}
         />
       </div>
-      <button type="submit">Register</button>
+      <button type="submit">Login</button>
     </form>
   );
 }
 
-export default Register;
+export default Login;
