@@ -1,51 +1,36 @@
-require('dotenv').config();
-
 const express = require('express');
 const cors = require('cors');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+require('dotenv').config();
+
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 
-const jwtSecret = process.env.JWT_SECRET || 'secretkey'; 
+const users = [];
+const PORT = process.env.PORT || 5000;
+const jwtSecret = process.env.JWT_SECRET || 'your_super_secret_key';
 
-app.get('/', (req, res) => {
-    res.send('Welcome to the SkillSync AI backend!');
-  });
+// Example route using jwtSecret
+app.post('/api/login', async (req, res) => {
+  const { username, password } = req.body;
+  const user = users.find(user => user.username === username);
 
-let posts = [
-  { id: 1, title: 'Post 1', body: 'This is the first post.' },
-  { id: 2, title: 'Post 2', body: 'This is the second post.' },
-];
-app.get('/api/posts', (req, res) => {
-    res.json(posts);
-  });
-  app.post('/api/posts', (req, res) => {
-    const newPost = {
-      id: posts.length + 1,
-      title: req.body.title,
-      body: req.body.body,
-    };
-    posts.push(newPost);
-    res.status(201).json(newPost);
-  });
-  app.put('/api/posts/:id', (req, res) => {
-    const postId = parseInt(req.params.id);
-    const postIndex = posts.findIndex(post => post.id === postId);
-  
-    if (postIndex !== -1) {
-      posts[postIndex] = {
-        id: postId,
-        title: req.body.title,
-        body: req.body.body,
-      };
-      res.json(posts[postIndex]);
-    } else {
-      res.status(404).json({ message: 'Post not found' });
-    }
-  });
-  app.delete('/api/posts/:id', (req, res) => {
-    const postId = parseInt(req.params.id);
-    posts = posts.filter(post => post.id !== postId);
-    res.status(204).end();
-  });
+  if (!user) {
+    return res.status(400).json({ message: 'Invalid username or password' });
+  }
+
+  const isMatch = await bcrypt.compare(password, user.password);
+  if (!isMatch) {
+    return res.status(400).json({ message: 'Invalid username or password' });
+  }
+
+  const token = jwt.sign({ id: user.id }, jwtSecret, { expiresIn: '1h' });
+  res.json({ token });
+});
+
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
