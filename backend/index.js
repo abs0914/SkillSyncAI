@@ -1,9 +1,17 @@
+require('dotenv').config();
+
 const express = require('express');
 const cors = require('cors');
 const app = express();
 
 app.use(cors());
 app.use(express.json());
+
+const jwtSecret = process.env.JWT_SECRET || 'secretkey'; 
+
+app.get('/', (req, res) => {
+    res.send('Welcome to the SkillSync AI backend!');
+  });
 
 let posts = [
   { id: 1, title: 'Post 1', body: 'This is the first post.' },
