@@ -7,7 +7,7 @@ function Home() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    axios.get('https://jsonplaceholder.typicode.com/posts')
+    axios.get('http://localhost:5000/api/posts')
       .then((response) => {
         setPosts(response.data);
         setLoading(false);
