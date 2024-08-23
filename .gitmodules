@@ -1,0 +1,3 @@
+[submodule "skill-sync-ai"]
+	path = skill-sync-ai
+	url = https://github.com/abs0914/SkillSyncAI
