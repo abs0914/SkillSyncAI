@@ -1,5 +1,6 @@
 const express = require('express');
-const cors = require('cors'); // Import the CORS package
+const cors = require('cors');
+require('dotenv').config(); // Load environment variables
 
 const app = express();
 
@@ -9,6 +10,19 @@ app.use(cors());
 // Middleware to parse JSON bodies
 app.use(express.json());
 
+const rateLimit = require('express-rate-limit');
+
+const compression = require('compression');
+app.use(compression());
+
+// Apply to all requests
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit each IP to 100 requests per windowMs
+});
+
+app.use(limiter);
+
 // Import your routes
 const authRoutes = require('./auth');
 const postsRoutes = require('./posts');
@@ -17,7 +31,7 @@ const postsRoutes = require('./posts');
 app.use('/api', authRoutes);
 app.use('/api', postsRoutes);
 
-// Define the port for the server
+// Use environment variables for the port
 const PORT = process.env.PORT || 5000;
 
 // Start the server and listen on the specified port

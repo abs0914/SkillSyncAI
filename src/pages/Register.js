@@ -1,37 +1,56 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 
-   function Register() {
-     const [username, setUsername] = useState('');
-     const [password, setPassword] = useState('');
+function Login({ onLogin }) {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState(''); // Feedback message state
 
-     const handleSubmit = (e) => {
-       e.preventDefault();
-       // Add registration logic here
-       console.log('Register submitted', { username, password });
-     };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setMessage(''); // Clear any previous messages
+    try {
+      const response = await axios.post('http://localhost:5000/api/login', { username, password });
+      onLogin(response.data.token);
+      setMessage('Login successful!');
+    } catch (error) {
+      setMessage('Failed to log in, please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
-     return (
-       <form onSubmit={handleSubmit}>
-         <h3>Register</h3>
-         <div>
-           <label>Username:</label>
-           <input
-             type="text"
-             value={username}
-             onChange={(e) => setUsername(e.target.value)}
-           />
-         </div>
-         <div>
-           <label>Password:</label>
-           <input
-             type="password"
-             value={password}
-             onChange={(e) => setPassword(e.target.value)}
-           />
-         </div>
-         <button type="submit">Register</button>
-       </form>
-     );
-   }
+  return (
+    <div>
+      <h2>Login</h2>
+      {message && <p>{message}</p>} {/* Display the feedback message */}
+      <form onSubmit={handleSubmit}>
+        <div>
+          <label>Username:</label>
+          <input
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            required
+          />
+        </div>
+        <div>
+          <label>Password:</label>
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+        </div>
+        <button type="submit" disabled={loading}>
+          {loading ? 'Logging in...' : 'Login'}
+        </button>
+      </form>
+    </div>
+  );
+}
 
-   export default Register;
+export default Login;
