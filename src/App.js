@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import Home from './pages/Home';
@@ -10,8 +9,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import VIPPage from './pages/VIPPage';
 import ProtectedRoute from './components/ProtectedRoute';
-import ScrollToTopButton from './components/ScrollToTopButton'; // Import the ScrollToTopButton
-
+import ScrollToTopButton from './components/ScrollToTopButton';
 
 function App() {
   const [token, setToken] = useState('');
@@ -46,7 +44,6 @@ function App() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/login" element={<Login onLogin={handleLogin} />} />
           <Route path="/register" element={<Register />} />
-          {/* VIP Page is now protected */}
           <Route
             path="/vip"
             element={
@@ -56,6 +53,7 @@ function App() {
             }
           />
         </Routes>
+        <ScrollToTopButton />
       </main>
       <Footer />
     </div>

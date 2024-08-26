@@ -1,5 +1,6 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const User = require('./models/User'); // Assuming the User model is in a models folder
 
 const router = express.Router();
@@ -24,7 +25,7 @@ router.post('/register', async (req, res) => {
   }
 });
 
-// Login route (for example)
+// Login route
 router.post('/login', async (req, res) => {
   const { username, password } = req.body;
 
@@ -39,9 +40,13 @@ router.post('/login', async (req, res) => {
       return res.status(400).json({ message: 'Invalid username or password' });
     }
 
-    // Ideally, you would generate and return a token here
+    // Generate JWT token
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+      expiresIn: '1h', // Token expires in 1 hour
+    });
 
-    res.status(200).json({ message: 'Login successful' });
+    // Return the token
+    res.status(200).json({ token });
   } catch (error) {
     res.status(500).json({ message: 'Error logging in', error });
   }
